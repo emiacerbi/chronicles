@@ -10,17 +10,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id   Int    @id @default(autoincrement())
+  name String
+  hero Hero?
+}
+
 model Hero {
   id         Int         @id @default(autoincrement())
   name       String
   heroClass  String
   chronicles Chronicle[]
+  user       User        @relation(fields: [userId], references: [id])
+  userId     Int         @unique
 }
 
 model Chronicle {
   id      Int    @id @default(autoincrement())
   content String
   author  Hero   @relation(fields: [heroId], references: [id])
-  heroId  Int    @unique 
+  heroId  Int    @unique
 }
-

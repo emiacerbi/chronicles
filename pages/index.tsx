@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { createHero } from '../services/createHero'
+import { createHero } from '../services/heroAPI'
 import Image from 'next/image'
 import Wrapper from '../components/Wrapper'
 import { heroes } from '../config/constants'
@@ -7,11 +7,11 @@ import { heroes } from '../config/constants'
 export default function Home() {
   const handleClick = async () => {
     const response = await createHero({
-      name: 'Emi',
-      heroClass: 'Warrior',
+      name: 'Carlos',
+      heroClass: 'Hunter',
     })
 
-    console.log(response.data)
+    console.log(response)
   }
   return (
     <>
@@ -33,7 +33,7 @@ export default function Home() {
                     className="grid gap-4"
                     onClick={handleClick}
                   >
-                    <div className="relative w-64 h-80 border-2 border-neutral-100 rounded-lg overflow-hidden duration-300 transition-transform hover:-translate-y-1">
+                    <div className="relative shadow-lg w-64 h-80 border-2 border-neutral-100 rounded-lg overflow-hidden duration-300 transition-transform hover:-translate-y-1">
                       <Image
                         src={hero.avatar}
                         alt={hero.description}

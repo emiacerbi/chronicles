@@ -8,7 +8,7 @@ export default async function handler(
 ) {
   const prisma = new PrismaClient()
 
-  const response = await prisma.hero.create({
+  const response = await prisma.user.create({
     data: req.body,
   })
 
