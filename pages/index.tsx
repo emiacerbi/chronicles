@@ -6,25 +6,31 @@ import { heroes } from '../config/constants'
 import { getSession, signOut } from 'next-auth/react'
 import { NextPageContext } from 'next'
 import Button from '../components/Button'
+import { PrismaClient } from '@prisma/client'
+import { useRouter } from 'next/router'
 
 type Props = {
-  data: {
-    user: {
-      name: string
-      image: string
-    }
+  user: {
+    id: string
+    name: string
+    image: string
+    email: string
   }
 }
 
-export default function Home({ data }: Props) {
+export default function Home({ user }: Props) {
+  const router = useRouter()
   const handleClick = async () => {
     const response = await createHero({
       name: 'Carlos',
       heroClass: 'Hunter',
+      userId: user.id,
     })
-  }
 
-  console.log(data)
+    if (response.status === 200) {
+      router.reload()
+    }
+  }
 
   return (
     <>
@@ -39,10 +45,10 @@ export default function Home({ data }: Props) {
           <div className="min-h-screen flex flex-col py-10">
             <div className="flex items-center gap-4">
               <h1 className="text-center text-3xl">Chronicles</h1>
-              <p className="ml-auto">Welcome {data.user.name}</p>
+              <p className="ml-auto">Welcome {user.name}</p>
               <Image
-                src={data.user.image}
-                alt={data.user.name}
+                src={user.image}
+                alt={user.name}
                 width={30}
                 height={30}
                 style={{
@@ -85,7 +91,11 @@ export default function Home({ data }: Props) {
 }
 
 export async function getServerSideProps(ctx: NextPageContext) {
+  const prisma = new PrismaClient()
+
   const data = await getSession(ctx)
+
+  console.log({ data })
 
   if (!data) {
     return {
@@ -95,9 +105,33 @@ export async function getServerSideProps(ctx: NextPageContext) {
     }
   }
 
+  const user = await prisma.user.findFirst({
+    where: { email: data.user?.email },
+  })
+
+  console.log({ user })
+
+  const userId = user?.id
+
+  const heroes = await prisma.hero.findFirst({
+    where: { userId: userId },
+  })
+
+  console.log({ heroes })
+
+  prisma.$disconnect()
+
+  if (heroes) {
+    return {
+      redirect: {
+        destination: '/protected',
+      },
+    }
+  }
+
   if (data.user) {
     return {
-      props: { data },
+      props: { user },
     }
   }
 }

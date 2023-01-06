@@ -3,13 +3,14 @@ import { ChroniclesClient } from '../config/axios'
 type Hero = {
   name: string
   heroClass: string
+  userId: string
 }
 
-export const createHero = async ({ name, heroClass }: Hero) => {
+export const createHero = async ({ name, heroClass, userId }: Hero) => {
   let body = JSON.stringify({
     name,
     heroClass,
-    userId: 2,
+    userId,
   })
 
   const response = await ChroniclesClient.post('/api/hero', body)
