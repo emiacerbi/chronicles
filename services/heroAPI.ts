@@ -1,3 +1,4 @@
+import { PrismaClient } from '@prisma/client'
 import { ChroniclesClient } from '../config/axios'
 
 type Hero = {
@@ -17,7 +18,12 @@ export const createHero = async ({ name, heroClass, userId }: Hero) => {
   return response
 }
 
-export const getHeroById = async (id: number) => {
+export const getHeroById = async (id: string) => {
   const response = await ChroniclesClient.get('/api/hero/' + id)
+  return response
+}
+
+export const deleteHeroById = async (id: string) => {
+  const response = await ChroniclesClient.delete('/api/hero/' + id)
   return response
 }

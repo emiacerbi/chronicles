@@ -124,7 +124,7 @@ export async function getServerSideProps(ctx: NextPageContext) {
   if (heroes) {
     return {
       redirect: {
-        destination: '/protected',
+        destination: '/dashboard',
       },
     }
   }

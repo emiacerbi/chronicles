@@ -33,7 +33,7 @@ model Hero {
 model Chronicle {
   id      String    @id @default(cuid())
   content String
-  author  Hero   @relation(fields: [heroId], references: [id])
+  author  Hero      @relation(fields: [heroId], references: [id])
   heroId  String    @unique
 }
 

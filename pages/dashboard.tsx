@@ -1,11 +1,12 @@
-import { Chronicle, PrismaClient } from '@prisma/client'
+import { Chronicle, Hero, PrismaClient, User } from '@prisma/client'
 import { InferGetServerSidePropsType, NextPageContext } from 'next'
 import { getSession } from 'next-auth/react'
-import { Hero, User } from '../types'
 import Header from '../components/Header'
 import Layout from '../components/Layout'
 import Image from 'next/image'
 import { heroImg } from '../config/constants'
+import { deleteHeroById } from '../services/heroAPI'
+import { useRouter } from 'next/router'
 
 function Protected({
   hero,
@@ -13,6 +14,12 @@ function Protected({
   chronicles,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const imageSrc = heroImg[hero.heroClass as keyof typeof heroImg]
+  const router = useRouter()
+
+  const handleDelete = async () => {
+    const response = await deleteHeroById(hero.id)
+    router.reload()
+  }
 
   return (
     <Layout>
@@ -43,7 +50,10 @@ function Protected({
           <p>
             <span className="font-bold">Actions left:</span> 3
           </p>
-          <button className="bg-transparent mt-auto border border-red-500 text-red-500 py-2 px-6 rounded-lg">
+          <button
+            onClick={handleDelete}
+            className="bg-transparent mt-auto border border-red-500 text-red-500 py-2 px-6 rounded-lg"
+          >
             Delete your hero
           </button>
         </div>
@@ -93,6 +103,14 @@ export async function getServerSideProps(ctx: NextPageContext) {
   const hero = (await prisma.hero.findFirst({
     where: { userId: userId },
   })) as Hero
+
+  if (!hero) {
+    return {
+      redirect: {
+        destination: '/login',
+      },
+    }
+  }
 
   const chronicles = (await prisma.chronicle.findMany()) as Chronicle[]
 

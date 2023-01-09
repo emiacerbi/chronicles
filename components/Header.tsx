@@ -2,7 +2,7 @@ import Image from 'next/image'
 import React from 'react'
 import Button from './Button'
 import { signOut } from 'next-auth/react'
-import { User } from '../types'
+import { User } from '@prisma/client'
 
 type Props = {
   user: User
@@ -14,8 +14,8 @@ function Header({ user }: Props) {
       <h1 className="text-center text-3xl">Chronicles</h1>
       <p className="ml-auto">Welcome {user.name}</p>
       <Image
-        src={user.image}
-        alt={user.name}
+        src={user.image!}
+        alt={user.name!}
         width={30}
         height={30}
         style={{

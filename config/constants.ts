@@ -18,3 +18,9 @@ export const heroes = [
     description: 'Hunter with a pistol',
   },
 ] as const
+
+export const heroImg = {
+  Mage: '/heroes/mage.png',
+  Warrior: '/heroes/warrior.png',
+  Hunter: '/heroes/hunter.png',
+}
